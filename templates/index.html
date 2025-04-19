@@ -41,11 +41,11 @@
     .round-btn { border-radius:50%; width:50px; height:50px; font-size:1.4em; }
     .mic-btn   { border-radius:50%; width:60px; height:60px; font-size:1.6em; }
     .round-btn:hover, .mic-btn:hover { background:#666; transform:scale(1.1); }
-    .trackpad-container { flex:1; display:flex; flex-direction:column; align-items:center; margin-bottom:10px; }
+    .trackpad-container { flex:1; display:flex; flex-direction:column; align-items:center; margin-bottom:50px; }
     .trackpad { flex:1; width:90%; max-width:300px; background:#111; border:2px dashed #555;
-                border-radius:12px; touch-action:none; user-select:none; margin-bottom:10px;
+                border-radius:12px; touch-action:none; user-select:none; margin-bottom:30px;
                 position:relative; }
-    .click-buttons { display:flex; justify-content:center; gap:20px; margin-top:5px; }
+    .click-buttons { display:flex; justify-content:center; gap:20px; margin-top:0px; }
     .click-btn {
       background:#2980b9; border:none; border-radius:30px;
       padding:10px 20px; font-size:1.1em; color:#fff;
@@ -55,7 +55,7 @@
     }
     .click-btn:hover { background:#1f6391; transform:scale(1.05); }
     .toggle-keyboard-btn {
-      position:absolute; bottom:10px; right:10px;
+      position:absolute; bottom:40px; right:4px;
       background:#2980b9; border:none; border-radius:30px;
       width:60px; height:60px; color:#fff; font-size:1.6em;
       box-shadow:0 4px 10px rgba(0,0,0,0.5);
@@ -65,10 +65,10 @@
     .toggle-keyboard-btn:hover { background:#1f6391; transform:scale(1.1); }
     /* Keyboard overlay */
     .keyboard-overlay {
-      position:absolute; left:0; bottom:-60%; width:100%; height:40%;
+      position:absolute; left:0; bottom:-60%; width:100%; height:50%;
       background:#222; border-top-left-radius:30px; border-top-right-radius:30px;
       box-shadow:0 -5px 15px rgba(0,0,0,0.8); transition:bottom .4s;
-      display:flex; flex-direction:column; overflow:hidden;
+      display:inline; flex-direction:column; overflow:hidden;
     }
     .keyboard-overlay.open { bottom:0; }
     .overlay-header {
@@ -92,13 +92,14 @@
       display:grid; grid-template-columns:repeat(auto-fit,minmax(40px,1fr)); grid-gap:5px;
     }
     .key {
-      background:#444; border:none; border-radius:5px; padding:0px;
+      background:#444; border:none; border-radius:5px; padding:3px;
       cursor:pointer; transition:background .3s,transform .2s;
       color:#ecf0f1; text-align:center; font-size:1em;
     }
     .key:hover { background:#666; transform:scale(1.05); }
     .wide { grid-column:span 2; }
-    .space { grid-column:span 6; }
+    .space { grid-column:span 7; }
+    .key.active-shift { background:#555; }
   </style>
 </head>
 <body>
@@ -111,6 +112,7 @@
       </div>
       <div class="side-column">
         <button class="mic-btn" onclick="alert('Mic pendiente')">🎤</button>
+        <button class="round-btn" onclick="sendCommand('special','win')">⊞</button>
       </div>
       <div class="side-column">
         <button class="round-btn" onclick="sendCommand('media','prev')">⏮️</button>
@@ -136,88 +138,138 @@
       </div>
       <div class="tabs">
         <div class="tab-btn active" data-target="main">abc</div>
-        <div class="tab-btn" data-target="symbols">Símbolos</div>
         <div class="tab-btn" data-target="special">Esp</div>
       </div>
       <div id="main" class="keyboard-section active">
-        <!-- Sección principal: números y letras -->
-        <button class="key" onclick="sendKey('1')">1</button>
-        <button class="key" onclick="sendKey('2')">2</button>
-        <button class="key" onclick="sendKey('3')">3</button>
-        <button class="key" onclick="sendKey('4')">4</button>
-        <button class="key" onclick="sendKey('5')">5</button>
-        <button class="key" onclick="sendKey('6')">6</button>
-        <button class="key" onclick="sendKey('7')">7</button>
-        <button class="key" onclick="sendKey('8')">8</button>
-        <button class="key" onclick="sendKey('9')">9</button>
-        <button class="key" onclick="sendKey('0')">0</button>
-        <button class="key" onclick="sendKey('A')">A</button>
-        <button class="key" onclick="sendKey('B')">B</button>
-        <button class="key" onclick="sendKey('C')">C</button>
-        <button class="key" onclick="sendKey('D')">D</button>
-        <button class="key" onclick="sendKey('E')">E</button>
-        <button class="key" onclick="sendKey('F')">F</button>
-        <button class="key" onclick="sendKey('G')">G</button>
-        <button class="key" onclick="sendKey('H')">H</button>
-        <button class="key" onclick="sendKey('I')">I</button>
-        <button class="key" onclick="sendKey('J')">J</button>
-        <button class="key" onclick="sendKey('K')">K</button>
-        <button class="key" onclick="sendKey('L')">L</button>
-        <button class="key" onclick="sendKey('M')">M</button>
-        <button class="key" onclick="sendKey('N')">N</button>
-        <button class="key" onclick="sendKey('O')">O</button>
-        <button class="key" onclick="sendKey('P')">P</button>
-        <button class="key" onclick="sendKey('Q')">Q</button>
-        <button class="key" onclick="sendKey('R')">R</button>
-        <button class="key" onclick="sendKey('S')">S</button>
-        <button class="key" onclick="sendKey('T')">T</button>
-        <button class="key" onclick="sendKey('U')">U</button>
-        <button class="key" onclick="sendKey('V')">V</button>
-        <button class="key" onclick="sendKey('W')">W</button>
-        <button class="key" onclick="sendKey('X')">X</button>
-        <button class="key" onclick="sendKey('Y')">Y</button>
-        <button class="key" onclick="sendKey('Z')">Z</button>
-        <button class="wide key" onclick="sendKey('Backspace')">←</button>
-        <button class="key wide" onclick="sendKey('Shift')">⇧</button>
-        <button class="space key" onclick="sendKey(' ')">____</button>
-        <button class="wide key" onclick="sendKey('Enter')">↵</button>
-      </div>
-      <div id="symbols" class="keyboard-section">
-        <!-- Símbolos -->
-        <button class="key" onclick="sendKey('!')">!</button>
-        <button class="key" onclick="sendKey('@')">@</button>
-        <button class="key" onclick="sendKey('#')">#</button>
-        <button class="key" onclick="sendKey('$')">$</button>
-        <button class="key" onclick="sendKey('%')">%</button>
-        <button class="key" onclick="sendKey('^')">^</button>
-        <button class="key" onclick="sendKey('&')">&</button>
-        <button class="key" onclick="sendKey('(')">(</button>
-        <button class="key" onclick="sendKey(')')">)</button>
-        <button class="wide key" onclick="sendKey('Backspace')">←</button>
-        <button class="key wide" onclick="sendKey('Shift')">⇧</button>
-        <button class="space key" onclick="sendKey(' ')">____</button>
-        <button class="wide key" onclick="sendKey('Enter')">↵</button>
-      </div>
-      <div id="accented" class="keyboard-section">
-
+        <!-- Números -->
+        <button class="key" data-key="1" onclick="handleKey(this)">1</button>
+        <button class="key" data-key="2" onclick="handleKey(this)">2</button>
+        <button class="key" data-key="3" onclick="handleKey(this)">3</button>
+        <button class="key" data-key="4" onclick="handleKey(this)">4</button>
+        <button class="key" data-key="5" onclick="handleKey(this)">5</button>
+        <button class="key" data-key="6" onclick="handleKey(this)">6</button>
+        <button class="key" data-key="7" onclick="handleKey(this)">7</button>
+        <button class="key" data-key="8" onclick="handleKey(this)">8</button>
+        <button class="key" data-key="9" onclick="handleKey(this)">9</button>
+        <button class="key" data-key="0" onclick="handleKey(this)">0</button>
+        <!-- Letras -->
+        <button class="key" data-key="a" onclick="handleKey(this)">a</button>
+        <button class="key" data-key="b" onclick="handleKey(this)">b</button>
+        <button class="key" data-key="c" onclick="handleKey(this)">c</button>
+        <button class="key" data-key="d" onclick="handleKey(this)">d</button>
+        <button class="key" data-key="e" onclick="handleKey(this)">e</button>
+        <button class="key" data-key="f" onclick="handleKey(this)">f</button>
+        <button class="key" data-key="g" onclick="handleKey(this)">g</button>
+        <button class="key" data-key="h" onclick="handleKey(this)">h</button>
+        <button class="key" data-key="i" onclick="handleKey(this)">i</button>
+        <button class="key" data-key="j" onclick="handleKey(this)">j</button>
+        <button class="key" data-key="k" onclick="handleKey(this)">k</button>
+        <button class="key" data-key="l" onclick="handleKey(this)">l</button>
+        <button class="key" data-key="m" onclick="handleKey(this)">m</button>
+        <button class="key" data-key="n" onclick="handleKey(this)">n</button>
+        <button class="key" data-key="o" onclick="handleKey(this)">o</button>
+        <button class="key" data-key="p" onclick="handleKey(this)">p</button>
+        <button class="key" data-key="q" onclick="handleKey(this)">q</button>
+        <button class="key" data-key="r" onclick="handleKey(this)">r</button>
+        <button class="key" data-key="s" onclick="handleKey(this)">s</button>
+        <button class="key" data-key="t" onclick="handleKey(this)">t</button>
+        <button class="key" data-key="u" onclick="handleKey(this)">u</button>
+        <button class="key" data-key="v" onclick="handleKey(this)">v</button>
+        <button class="key" data-key="w" onclick="handleKey(this)">w</button>
+        <button class="key" data-key="x" onclick="handleKey(this)">x</button>
+        <button class="key" data-key="y" onclick="handleKey(this)">y</button>
+        <button class="key" data-key="z" onclick="handleKey(this)">z</button>
+        <!-- Controles especiales -->
+        <button id="shift-button" class="key wide" onclick="toggleShift()">⇧</button>
+        <button class="key wide" data-key="Backspace" onclick="handleKey(this)">←</button>
+        <button class="key wide" data-key="Enter" onclick="handleKey(this)">↵</button>
+        <button class="space key" onclick="sendCommand('special','space')">____</button>
+        
       </div>
       <div id="special" class="keyboard-section">
         <!-- Fn y flechas -->
-        <button class="key" onclick="sendKey('Esc')">Esc</button>
-        <button class="key" onclick="sendKey('ArrowUp')">↑</button>
-        <button class="key" onclick="sendKey('ArrowLeft')">←</button>
-        <button class="key" onclick="sendKey('ArrowDown')">↓</button>
-        <button class="key" onclick="sendKey('ArrowRight')">→</button>
+        <button class="key" onclick="sendCommand('special','esc')">Esc</button>
+        <button class="key" onclick="sendCommand('special','up')">↑</button>
+        <button class="key" onclick="sendCommand('special','left')">←</button>
+        <button class="key" onclick="sendCommand('special','down')">↓</button>
+        <button class="key" onclick="sendCommand('special','right')">→</button>
+        <button class="key" onclick="sendCommand('special','prtsc')">Prnt</button>
+        <button class="key" onclick="sendCommand('special','copy')">Copy</button>
+        <button class="key" onclick="sendCommand('special','paste')">Paste</button>
+        <button class="key" onclick="sendCommand('special','f1')">F1</button>
+        <button class="key" onclick="sendCommand('special','f2')">F2</button>
+        <button class="key" onclick="sendCommand('special','f3')">F3</button>
+        <button class="key" onclick="sendCommand('special','f4')">F4</button>
+        <button class="key" onclick="sendCommand('special','f5')">F5</button>
+        <button class="key" onclick="sendCommand('special','f6')">F6</button>
+        <button class="key" onclick="sendCommand('special','f7')">F7</button>
+        <button class="key" onclick="sendCommand('special','f8')">F8</button>
+        <button class="key" onclick="sendCommand('special','f9')">F9</button>
+        <button class="key" onclick="sendCommand('special','f10')">F10</button>
+        <button class="key" onclick="sendCommand('special','f11')">F11</button>
+        <button class="key" onclick="sendCommand('special','f12')">F12</button>
       </div>
     </div>
   </div>
 
+  
   <script>
     const socket = io();
-    function sendCommand(type,data){ socket.emit(type,data); }
-    function sendKey(key){ socket.emit('keyboard',key); }
 
-    // Manejo del trackpad
+    function sendCommand(type, data) {
+      socket.emit(type, data);
+    }
+
+    // Mapa de símbolos para shift + número
+    const symbolsMap = {
+      '1': '!', '2': '@', '3': '#', '4': '$', '5': '%',
+      '6': '^', '7': '&', '8': '*', '9': '(', '0': ')'
+    };
+    let shiftActive = false;
+
+    function toggleShift() {
+      shiftActive = !shiftActive;
+      document.getElementById('shift-button')
+              .classList.toggle('active-shift', shiftActive);
+      updateKeyLabels();
+    }
+
+    function updateKeyLabels() {
+      document.querySelectorAll('#main .key').forEach(btn => {
+        const key = btn.dataset.key;
+        // Solo actualizar etiquetas de teclas de un solo carácter (letras y números)
+        if (typeof key !== 'string' || key.length !== 1) return;
+
+        let label = key;
+        if (shiftActive) {
+          if (/[a-z]/.test(key)) {
+            label = key.toUpperCase();
+          } else if (symbolsMap[key]) {
+            label = symbolsMap[key];
+          }
+        }
+        // Para la barra espaciadora
+        if (key === ' ') {
+          label = shiftActive ? ' ' : '____';
+        }
+        btn.innerText = label;
+      });
+    }
+
+    function handleKey(el) {
+      const key = el.dataset.key;
+      let output = key;
+      if (shiftActive && key.length === 1) {
+        if (/[a-z]/.test(key)) {
+          output = key.toUpperCase();
+        } else if (symbolsMap[key]) {
+          output = symbolsMap[key];
+        }
+      }
+      socket.emit('keyboard', output);
+    }
+
+    // ————— Resto de lógica de trackpad (sin cambios) —————
     let leftButtonDown = false;
     const leftBtn = document.getElementById('left-btn');
     leftBtn.addEventListener('pointerdown', e => {
@@ -235,13 +287,11 @@
     let didMove = false;
     let twoFingerTap = false, gestureStart = 0, initialPositions = new Map();
     let lastScrollY = 0;
-    const MOVE_THRESHOLD = 5;
-    const TAP_TIME = 200;
+    const MOVE_THRESHOLD = 5, TAP_TIME = 200;
 
     trackpad.addEventListener('pointerdown', e => {
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       trackpad.setPointerCapture(e.pointerId);
-
       if (pointers.size === 1) {
         initialTouch = { x: e.clientX, y: e.clientY };
         didMove = false;
@@ -257,7 +307,6 @@
     trackpad.addEventListener('pointermove', e => {
       if (!pointers.has(e.pointerId)) return;
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
       if (pointers.size === 2) {
         if (twoFingerTap) {
           const init = initialPositions.get(e.pointerId);
@@ -270,13 +319,11 @@
         const dy = avgY - lastScrollY;
         lastScrollY = avgY;
         socket.emit('mouse_scroll', { dy: -dy });
-      } else if (pointers.size === 1) {
+      } else {
         if (initialTouch) {
           const dx = e.clientX - initialTouch.x;
           const dy = e.clientY - initialTouch.y;
-          if (Math.hypot(dx, dy) > MOVE_THRESHOLD) {
-            didMove = true;
-          }
+          if (Math.hypot(dx, dy) > MOVE_THRESHOLD) didMove = true;
         }
         socket.emit('mouse_move', { dx: e.movementX, dy: e.movementY });
       }
@@ -285,7 +332,6 @@
     trackpad.addEventListener('pointerup', e => {
       pointers.delete(e.pointerId);
       trackpad.releasePointerCapture(e.pointerId);
-
       if (pointers.size === 0) {
         if (!leftButtonDown && !didMove) {
           socket.emit('mouse_click', { button: 'left' });
@@ -307,10 +353,11 @@
       twoFingerTap = false;
     });
 
-    // Función para abrir o cerrar el panel de teclado
+    // Toggle del overlay de teclado
     const keyboardOverlay = document.getElementById('keyboardOverlay');
     function toggleKeyboard() { keyboardOverlay.classList.toggle('open'); }
 
+    // Pestañas del teclado
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));

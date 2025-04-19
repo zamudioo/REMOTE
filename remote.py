@@ -11,7 +11,7 @@ socketio = SocketIO(app)
 # Conjunto de teclas especiales
 SPECIAL_KEYS = {
     "esc", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12",
-    "tab", "capslock", "shift", "ctrl", "alt", "win", "menu", "enter", "backspace"
+    "tab", "capslock", "shift", "ctrl", "alt", "win", "menu", "enter", "backspace","space"
 }
 
 @app.route('/')
@@ -43,6 +43,58 @@ def handle_keyboard(data):
         pyautogui.press(key.lower())
     else:
         pyautogui.write(key)
+
+@socketio.on('special')
+def handle_special(data):
+    if data == 'space' :
+        pyautogui.press('space')
+    elif data == 'esc' :
+        pyautogui.press('esc')
+    elif data == 'win' :
+        pyautogui.press('win')
+    elif data == 'up' :
+        pyautogui .press('up')
+    elif data == 'down' :
+        pyautogui .press('down')
+    elif data == 'right' :
+        pyautogui .press('right')
+    elif data == 'left' :
+        pyautogui .press('left')
+    elif data == 'prtsc' :
+        pyautogui .press('prtsc')
+    elif data == 'copy' :
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('c')
+        pyautogui.keyUp('ctrl')
+    elif data == 'paste' :
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('v')
+        pyautogui.keyUp('ctrl')
+    elif data == 'f1' :
+        pyautogui .press('f1')
+    elif data == 'f2' :
+        pyautogui .press('f2')
+    elif data == 'f3' :
+        pyautogui .press('f3')
+    elif data == 'f4' :
+        pyautogui .press('f4')
+    elif data == 'f5' :
+        pyautogui .press('f5')
+    elif data == 'f6' :
+        pyautogui .press('f6')
+    elif data == 'f7' :
+        pyautogui .press('f7')
+    elif data == 'f8' :
+        pyautogui .press('f8')
+    elif data == 'f9' :
+        pyautogui .press('f9')
+    elif data == 'f10' :
+        pyautogui .press('f10')
+    elif data == 'f11' :
+        pyautogui .press('f11')
+    elif data == 'f12' :
+        pyautogui .press('f12')
+    
 
 @socketio.on('mouse_move')
 def handle_mouse_move(data):
