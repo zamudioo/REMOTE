@@ -3,12 +3,12 @@ from flask_socketio import SocketIO
 import pyautogui
 import socket
 
-SCROLL_FACTOR = 5  # Puedes ajustar el factor hasta acomodar el scroll
+SCROLL_FACTOR = 5  # Ajusta el factor para modificar la velocidad de scroll
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-# Lista de teclas especiales para ejecutar con pyautogui.press en lugar de pyautogui.write
+# Conjunto de teclas especiales
 SPECIAL_KEYS = {
     "esc", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12",
     "tab", "capslock", "shift", "ctrl", "alt", "win", "menu", "enter", "backspace"
@@ -39,7 +39,6 @@ def handle_media(data):
 @socketio.on('keyboard')
 def handle_keyboard(data):
     key = data.strip()
-    # Si la tecla es especial, la ejecuta; en otro caso escribe el carácter
     if key.lower() in SPECIAL_KEYS:
         pyautogui.press(key.lower())
     else:
