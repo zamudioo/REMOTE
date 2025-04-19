@@ -2,120 +2,303 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>control</title>
+  <title>Control Remoto Mejorado</title>
+  <!-- Se incluye Google Fonts para un aspecto moderno -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   <style>
+    /* Estilos generales */
     body {
-      background-color: #1e1e1e;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
+      background: linear-gradient(135deg, #1e1e1e, #2c3e50);
+      font-family: 'Roboto', sans-serif;
+      color: #ecf0f1;
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin: 0;
       padding: 20px;
     }
-    h1 { margin-bottom: 20px; }
-    .section {
-      background-color: #2c2c2c;
-      border-radius: 12px;
-      padding: 15px;
-      margin: 10px 0;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 10px #000;
+    header {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
-    .section h2 { margin-top: 0; }
-    button {
-      background-color: #444;
+    header button {
+      background-color: #34495e;
       border: none;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 30px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 1em;
+      color: #ecf0f1;
     }
-    button:hover { background-color: #666; }
-    input[type="text"] {
-      padding: 10px;
-      width: 70%;
-      border-radius: 8px;
+    header button:hover {
+      background-color: #3d566e;
+      transform: scale(1.05);
+    }
+    /* Contenedores de cada vista */
+    .view {
+      width: 100%;
+      max-width: 600px;
+      background-color: rgba(44, 62, 80, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+    .view.active {
+      display: block;
+    }
+    /* Secciones internas */
+    .section {
+      margin: 15px 0;
+    }
+    .section h2 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #7f8c8d;
+      padding-bottom: 5px;
+    }
+    /* Botones de control */
+    button.control-btn {
+      background-color: #e67e22;
       border: none;
-      margin-right: 5px;
+      padding: 12px 16px;
+      margin: 5px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      color: #fff;
+      font-size: 1.2em;
     }
+    button.control-btn:hover {
+      background-color: #d35400;
+      transform: scale(1.05);
+    }
+    /* Trackpad */
     #trackpad {
       width: 100%;
       height: 300px;
-      background-color: #111;
-      border: 2px dashed #555;
+      background-color: #2c3e50;
+      border: 3px dashed #7f8c8d;
       border-radius: 12px;
-      position: relative;
+      margin-bottom: 10px;
       touch-action: none;
       user-select: none;
+      position: relative;
     }
     #mouse-buttons {
       display: flex;
-      width: 100%;
-      margin-top: 10px;
+      justify-content: center;
+      gap: 10px;
     }
     #mouse-buttons button {
-      flex: 1;
-      height: 50px;
-      margin: 0;
-      border-radius: 0 0 8px 8px;
+      background-color: #2980b9;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 1.2em;
+      color: #fff;
     }
-    #mouse-buttons button:first-child { border-right: 1px solid #333; }
+    #mouse-buttons button:hover {
+      background-color: #1f6391;
+      transform: scale(1.05);
+    }
+    /* Teclado virtual */
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(35px, 1fr));
+      gap: 5px;
+      margin-top: 15px;
+      user-select: none;
+    }
+    .key {
+      background-color: #34495e;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      color: #ecf0f1;
+      text-align: center;
+      font-size: 0.9em;
+    }
+    .key:hover {
+      background-color: #3d566e;
+      transform: scale(1.05);
+    }
+    .key.wide {
+      grid-column: span 2;
+    }
+    .key.space {
+      grid-column: span 5;
+    }
   </style>
 </head>
 <body>
-  <h1>control</h1>
+  <header>
+    <button id="btnControl">Control</button>
+    <button id="btnTeclado">Teclado</button>
+  </header>
 
-  <div class="section">
-    <h2>Control de Volumen</h2>
-    <button onclick="sendCommand('volume','up')">🔊 +</button>
-    <button onclick="sendCommand('volume','down')">🔉 -</button>
-    <button onclick="sendCommand('volume','mute')">🔇</button>
+  <!-- Vista de Control Remoto -->
+  <div id="viewControl" class="view active">
+    <div class="section">
+      <h2>Control de Volumen</h2>
+      <!-- Se utilizan emojis representativos -->
+      <button class="control-btn" onclick="sendCommand('volume','up')">🔊</button>
+      <button class="control-btn" onclick="sendCommand('volume','down')">🔉</button>
+      <button class="control-btn" onclick="sendCommand('volume','mute')">🔇</button>
+    </div>
+
+    <div class="section">
+      <h2>Reproductor</h2>
+      <button class="control-btn" onclick="sendCommand('media','play_pause')">⏯️</button>
+      <button class="control-btn" onclick="sendCommand('media','next')">⏭️</button>
+      <button class="control-btn" onclick="sendCommand('media','prev')">⏮️</button>
+    </div>
+
+    <div class="section">
+      <h2>Mouse (Trackpad)</h2>
+      <div id="trackpad"></div>
+      <div id="mouse-buttons">
+        <button id="left-btn">◀️</button>
+        <button id="right-btn" onclick="socket.emit('mouse_click', { button: 'right' })">▶️</button>
+      </div>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>Reproductor</h2>
-    <button onclick="sendCommand('media','play_pause')">⏯️</button>
-    <button onclick="sendCommand('media','next')">⏭️</button>
-    <button onclick="sendCommand('media','prev')">⏮️</button>
-  </div>
+  <!-- Vista de Teclado -->
+  <div id="viewTeclado" class="view">
+    <div class="section">
+      <h2>Teclado Virtual</h2>
+      <div class="keyboard" id="keyboard">
+        <!-- Fila 1: Teclas de Función -->
+        <button class="key" onclick="sendKey('Esc')">Esc</button>
+        <button class="key" onclick="sendKey('F1')">F1</button>
+        <button class="key" onclick="sendKey('F2')">F2</button>
+        <button class="key" onclick="sendKey('F3')">F3</button>
+        <button class="key" onclick="sendKey('F4')">F4</button>
+        <button class="key" onclick="sendKey('F5')">F5</button>
+        <button class="key" onclick="sendKey('F6')">F6</button>
+        <button class="key" onclick="sendKey('F7')">F7</button>
+        <button class="key" onclick="sendKey('F8')">F8</button>
+        <button class="key" onclick="sendKey('F9')">F9</button>
+        <button class="key" onclick="sendKey('F10')">F10</button>
+        <button class="key" onclick="sendKey('F11')">F11</button>
+        <button class="key" onclick="sendKey('F12')">F12</button>
 
-  <div class="section">
-    <h2>Teclado</h2>
-    <input type="text" id="keyboard-input" placeholder="Escribe algo..." />
-    <button onclick="sendKeyboard()">Enviar</button>
-  </div>
+        <!-- Fila 2: Números y símbolos -->
+        <button class="key" onclick="sendKey('`')">~</button>
+        <button class="key" onclick="sendKey('1')">1</button>
+        <button class="key" onclick="sendKey('2')">2</button>
+        <button class="key" onclick="sendKey('3')">3</button>
+        <button class="key" onclick="sendKey('4')">4</button>
+        <button class="key" onclick="sendKey('5')">5</button>
+        <button class="key" onclick="sendKey('6')">6</button>
+        <button class="key" onclick="sendKey('7')">7</button>
+        <button class="key" onclick="sendKey('8')">8</button>
+        <button class="key" onclick="sendKey('9')">9</button>
+        <button class="key" onclick="sendKey('0')">0</button>
+        <button class="key" onclick="sendKey('-')">-</button>
+        <button class="key" onclick="sendKey('=')">=</button>
+        <button class="key wide" onclick="sendKey('Backspace')">←</button>
 
-  <div class="section">
-    <h2>Mouse (Trackpad)</h2>
-    <div id="trackpad"></div>
-    <div id="mouse-buttons">
-      <!-- La zona del botón izquierdo ahora se usa para iniciar el drag -->
-      <button id="left-btn">⏴</button>
-      <button id="right-btn" onclick="socket.emit('mouse_click', { button: 'right' })">⏵</button>
+        <!-- Fila 3: QWERTY -->
+        <button class="key wide" onclick="sendKey('Tab')">Tab</button>
+        <button class="key" onclick="sendKey('Q')">Q</button>
+        <button class="key" onclick="sendKey('W')">W</button>
+        <button class="key" onclick="sendKey('E')">E</button>
+        <button class="key" onclick="sendKey('R')">R</button>
+        <button class="key" onclick="sendKey('T')">T</button>
+        <button class="key" onclick="sendKey('Y')">Y</button>
+        <button class="key" onclick="sendKey('U')">U</button>
+        <button class="key" onclick="sendKey('I')">I</button>
+        <button class="key" onclick="sendKey('O')">O</button>
+        <button class="key" onclick="sendKey('P')">P</button>
+        <button class="key" onclick="sendKey('[')">[</button>
+        <button class="key" onclick="sendKey(']')">]</button>
+        <button class="key" onclick="sendKey('\\')">\</button>
+
+        <!-- Fila 4: ASDF -->
+        <button class="key wide" onclick="sendKey('CapsLock')">Caps</button>
+        <button class="key" onclick="sendKey('A')">A</button>
+        <button class="key" onclick="sendKey('S')">S</button>
+        <button class="key" onclick="sendKey('D')">D</button>
+        <button class="key" onclick="sendKey('F')">F</button>
+        <button class="key" onclick="sendKey('G')">G</button>
+        <button class="key" onclick="sendKey('H')">H</button>
+        <button class="key" onclick="sendKey('J')">J</button>
+        <button class="key" onclick="sendKey('K')">K</button>
+        <button class="key" onclick="sendKey('L')">L</button>
+        <button class="key" onclick="sendKey(';')">;</button>
+        <button class="key" onclick="sendKey('\'')">'</button>
+        <button class="key wide" onclick="sendKey('Enter')">⏎</button>
+
+        <!-- Fila 5: ZXCV -->
+        <button class="key wide" onclick="sendKey('Shift')">Shift</button>
+        <button class="key" onclick="sendKey('Z')">Z</button>
+        <button class="key" onclick="sendKey('X')">X</button>
+        <button class="key" onclick="sendKey('C')">C</button>
+        <button class="key" onclick="sendKey('V')">V</button>
+        <button class="key" onclick="sendKey('B')">B</button>
+        <button class="key" onclick="sendKey('N')">N</button>
+        <button class="key" onclick="sendKey('M')">M</button>
+        <button class="key" onclick="sendKey(',')">,</button>
+        <button class="key" onclick="sendKey('.')">.</button>
+        <button class="key" onclick="sendKey('/')">/</button>
+        <button class="key wide" onclick="sendKey('Shift')">Shift</button>
+
+        <!-- Fila 6: Modificadores y Barra Espaciadora -->
+        <button class="key wide" onclick="sendKey('Ctrl')">Ctrl</button>
+        <button class="key" onclick="sendKey('Win')">Win</button>
+        <button class="key" onclick="sendKey('Alt')">Alt</button>
+        <button class="key space" onclick="sendKey(' ')">Space</button>
+        <button class="key" onclick="sendKey('Alt')">Alt</button>
+        <button class="key" onclick="sendKey('Win')">Win</button>
+        <button class="key" onclick="sendKey('Menu')">Menu</button>
+        <button class="key wide" onclick="sendKey('Ctrl')">Ctrl</button>
+      </div>
     </div>
   </div>
 
   <script>
     const socket = io();
 
+    // Funciones para enviar comandos
     function sendCommand(type, data) {
       socket.emit(type, data);
     }
-    function sendKeyboard() {
-      const text = document.getElementById('keyboard-input').value;
-      socket.emit('keyboard', text);
+    function sendKey(key) {
+      socket.emit('keyboard', key);
     }
 
-    // VARIABLES GLOBALES PARA EL TRACKPAD Y EL DRAG
-    let leftButtonDown = false;  // Indica si se está presionando el botón izquierdo (para drag)
-    const MOVE_THRESHOLD = 5;    // Distancia mínima para considerar que hubo movimiento (en px)
+    // Alterna vistas de Control y Teclado
+    const btnControl = document.getElementById('btnControl');
+    const btnTeclado = document.getElementById('btnTeclado');
+    const viewControl = document.getElementById('viewControl');
+    const viewTeclado = document.getElementById('viewTeclado');
 
-    // --- Eventos para el botón izquierdo (para activar drag) ---
+    btnControl.addEventListener('click', () => {
+      viewControl.classList.add('active');
+      viewTeclado.classList.remove('active');
+    });
+
+    btnTeclado.addEventListener('click', () => {
+      viewTeclado.classList.add('active');
+      viewControl.classList.remove('active');
+    });
+
+    // --- Código del Trackpad (vista de Control) ---
+    let leftButtonDown = false;
+    const MOVE_THRESHOLD = 5;
     const leftBtn = document.getElementById('left-btn');
+
     leftBtn.addEventListener('pointerdown', e => {
       leftButtonDown = true;
       socket.emit('mouse_down', { button: 'left' });
@@ -124,29 +307,23 @@
       leftButtonDown = false;
       socket.emit('mouse_up', { button: 'left' });
     });
-    // Se mantienen los clics simples del botón derecho
-    // (ya se implementa en el atributo onclick del botón derecho)
 
-    // --- Manejo de eventos en el trackpad ---
     const trackpad = document.getElementById('trackpad');
     let pointers = new Map();
-    let initialTouch = null;    // Para detectar un tap sin movimiento
-    let didMove = false;        // Flag para detectar si se realizó movimiento
-    // Variables para scroll con dos dedos
+    let initialTouch = null;
+    let didMove = false;
     let twoFingerTap = false, gestureStart = 0, initialPositions = new Map();
     let lastScrollY = 0;
-    const TAP_TIME = 200;  // Tiempo límite para el two-finger tap
+    const TAP_TIME = 200;  // Tiempo máximo para considerar dos dedos como tap
 
     trackpad.addEventListener('pointerdown', e => {
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       trackpad.setPointerCapture(e.pointerId);
 
       if (pointers.size === 1) {
-        // Primer dedo: se registra la posición para tap/normal movement.
         initialTouch = { x: e.clientX, y: e.clientY };
         didMove = false;
       } else if (pointers.size === 2) {
-        // Si hay dos dedos, activamos el modo scroll.
         twoFingerTap = true;
         gestureStart = Date.now();
         initialPositions = new Map(pointers);
@@ -160,7 +337,6 @@
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
       if (pointers.size === 2) {
-        // MODO SCROLL CON DOS DEDOS
         if (twoFingerTap) {
           const init = initialPositions.get(e.pointerId);
           if (Math.hypot(e.clientX - init.x, e.clientY - init.y) > MOVE_THRESHOLD) {
@@ -173,7 +349,6 @@
         lastScrollY = avgY;
         socket.emit('mouse_scroll', { dy: -dy });
       } else if (pointers.size === 1) {
-        // UN DEDO: se envía mouse_move (sea para movimiento normal o para drag)
         if (initialTouch) {
           const dx = e.clientX - initialTouch.x;
           const dy = e.clientY - initialTouch.y;
@@ -181,8 +356,6 @@
             didMove = true;
           }
         }
-        // Si se presionó el botón izquierdo para drag, o si se usa solo el trackpad,
-        // se envía el movimiento (en ambos casos se usa el valor incremental de movementX/Y)
         socket.emit('mouse_move', { dx: e.movementX, dy: e.movementY });
       }
     });
@@ -192,16 +365,12 @@
       trackpad.releasePointerCapture(e.pointerId);
 
       if (pointers.size === 0) {
-        // Si no hay botón izquierdo presionado y no se detectó movimiento,
-        // se trata de un tap simple y se genera un clic.
         if (!leftButtonDown && !didMove) {
           socket.emit('mouse_click', { button: 'left' });
         }
-        // Si en modo scroll, se detecta un two-finger tap rápido, se envía clic derecho.
         if (twoFingerTap && (Date.now() - gestureStart) < TAP_TIME) {
           socket.emit('mouse_click', { button: 'right' });
         }
-        // Reiniciar variables.
         initialTouch = null;
         didMove = false;
         twoFingerTap = false;

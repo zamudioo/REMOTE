@@ -1,15 +1,18 @@
-# zamudiopilot.py
-
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import pyautogui
 import socket
 
-# Ajusta este factor para hacer el scroll más rápido o más lento
-SCROLL_FACTOR = 5  # prueba valores 2, 5, 10… hasta que te guste
+SCROLL_FACTOR = 5  # Puedes ajustar el factor hasta acomodar el scroll
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+# Lista de teclas especiales para ejecutar con pyautogui.press en lugar de pyautogui.write
+SPECIAL_KEYS = {
+    "esc", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12",
+    "tab", "capslock", "shift", "ctrl", "alt", "win", "menu", "enter", "backspace"
+}
 
 @app.route('/')
 def index():
@@ -35,7 +38,12 @@ def handle_media(data):
 
 @socketio.on('keyboard')
 def handle_keyboard(data):
-    pyautogui.write(data)
+    key = data.strip()
+    # Si la tecla es especial, la ejecuta; en otro caso escribe el carácter
+    if key.lower() in SPECIAL_KEYS:
+        pyautogui.press(key.lower())
+    else:
+        pyautogui.write(key)
 
 @socketio.on('mouse_move')
 def handle_mouse_move(data):
@@ -60,7 +68,6 @@ def handle_mouse_up(data):
 
 @socketio.on('mouse_scroll')
 def handle_mouse_scroll(data):
-    # Convertimos y aplicamos el factor de velocidad
     raw_dy = data.get('dy', 0)
     try:
         dy = int(raw_dy) * SCROLL_FACTOR
