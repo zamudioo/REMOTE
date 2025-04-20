@@ -94,6 +94,12 @@ def handle_special(data):
         pyautogui .press('f11')
     elif data == 'f12' :
         pyautogui .press('f12')
+    elif data == 'cap' :
+        pyautogui.keyDown('alt')
+        pyautogui.press('f1')
+        pyautogui.keyUp('alt')
+    elif data == 'vid' :
+        pyautogui.press('f23')
     
 
 @socketio.on('mouse_move')
