@@ -17,6 +17,9 @@ SPECIAL_KEYS = {
 @app.route('/')
 def index():
     return render_template('index.html')
+@app.route('/mouse')
+def mouse():
+    return render_template('mouse.html')
 
 @socketio.on('volume')
 def handle_volume(data):
