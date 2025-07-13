@@ -84,8 +84,8 @@
       <div class="menu-content">
         <button onclick="window.location.href='/'">Inicio</button>
         <button onclick="window.location.href='/mouse'">Mouse</button>
-        <button onclick="socket.emit('system','shutdown')">Apagar PC</button>
-        <button onclick="socket.emit('system','suspend')">Reposo</button>
+        <button onclick="sendCommand('special','off')">Apagar PC</button>
+        <button onclick="sendCommand('special','suspend')">Reposo</button>
         <button onclick="toggleMenu()">Cerrar</button>
       </div>
     </div>

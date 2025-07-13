@@ -2,13 +2,18 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import pyautogui
 import socket
+import os
+import win32api
+import threading
+import pystray
+from PIL import Image, ImageDraw
+from plyer import notification
 
-SCROLL_FACTOR = 5  # Ajusta el factor para modificar la velocidad de scroll
+SCROLL_FACTOR = 5
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-# Conjunto de teclas especiales
 SPECIAL_KEYS = {
     "esc", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12",
     "tab", "capslock", "shift", "ctrl", "alt", "win", "menu", "enter", "backspace","space"
@@ -103,6 +108,11 @@ def handle_special(data):
         pyautogui.keyUp('alt')
     elif data == 'vid' :
         pyautogui.press('f23')
+    elif data == 'suspend' :
+        win32api.SetSystemPowerState(True, True)
+    elif data == 'off' :
+        os.system('shutdown -s')
+
     
 
 @socketio.on('mouse_move')
@@ -147,8 +157,36 @@ def get_local_ip():
         s.close()
     return ip
 
+def create_tray_icon(ip_address):
+    # Crear icono simple
+    width = 64
+    height = 64
+    image = Image.new('RGB', (width, height), color=(0, 0, 0))
+    dc = ImageDraw.Draw(image)
+    dc.text((8, 24), 'IP', fill=(255, 255, 255))
+
+    # Configurar icono de bandeja
+    icon = pystray.Icon(
+        'server_ip',
+        image,
+        title=f'Servidor IP: {ip_address}'
+    )
+    # Mostrar icono en bandeja de manera no bloqueante
+    threading.Thread(target=icon.run, daemon=True).start()
+
+def notify_ip(ip):
+    notification.notify(
+        title='Servidor iniciado',
+        message=f'La IP local es: {ip}',
+        timeout=10
+    )
+
 if __name__ == '__main__':
     ip = get_local_ip()
     port = 5000
     print(f'Servidor corriendo en http://{ip}:{port}')
+    # Crear icono de bandeja con la IP local
+    create_tray_icon(ip)
+    notify_ip(ip)
     socketio.run(app, host='0.0.0.0', port=port)
+
