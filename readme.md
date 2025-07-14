@@ -3,6 +3,8 @@
 
 ZamudioPilot is a tool that allows you to control your computer (volume, media playback, keyboard, mouse, etc.) from a locally hosted web page accessible from a mobile device.
 
+[![](https://markdown-videos.deta.dev/youtube/DqTLz9tM_-s)](https://youtu.be/DqTLz9tM_-s)
+
 ## Features
 
 - Volume control (up, down, mute)
@@ -19,18 +21,20 @@ ZamudioPilot is a tool that allows you to control your computer (volume, media p
 
 ### Steps
 
-1. Clone this repository:
+1. Install python and pip
+
+2. Clone this repository:
 
 ```bash
 git clone https://github.com/zamudioo/REMOTE.git
 cd REMOTE
 ```
 
-2. Install the dependencies:
+3. Install the dependencies:
 ```bash
 pip install flask flask-socketio pyautogui
 ```
-Run the server:
+4. Run the server:
 ```bash
 python remote.py
 ```
