@@ -3,7 +3,7 @@
 
 ZamudioPilot is a tool that allows you to control your computer (volume, media playback, keyboard, mouse, etc.) from a locally hosted web page accessible from a mobile device.
 
-[![](https://markdown-videos.deta.dev/youtube/DqTLz9tM_-s)](https://youtu.be/DqTLz9tM_-s)
+Video Demostration : https://youtu.be/DqTLz9tM_-s
 
 ## Features
 
